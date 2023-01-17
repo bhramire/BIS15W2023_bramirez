@@ -22,6 +22,7 @@ At this point, you should have familiarity in RStudio, GitHub, and basic operati
 ## Load the tidyverse
 ```{r message=FALSE, warning=FALSE}
 library("tidyverse")
+#install.packages("tidyverse")
 ```
 
 ## Data Frames
@@ -69,12 +70,15 @@ levels(hot_springs$scientist)
 
 The data are from: Gaeta J., G. Sass, S. Carpenter. 2012. Biocomplexity at North Temperate Lakes LTER: Coordinated Field Studies: Large Mouth Bass Growth 2006. Environmental Data Initiative.  [link](https://portal.edirepository.org/nis/mapbrowse?scope=knb-lter-ntl&identifier=267)  
 ```{r}
-
+getwd()
+setwd("~/Desktop/BIS15W2023_bramirez-main/lab3/data")
+fish <- readr::read_csv("Gaeta_etal_CLC_data.csv")
+fish
 ```
 
 2. What is the structure of these data?
 ```{r}
-
+str(fish)
 ```
 
 Notice that when the data are imported, you are presented with a message that tells you how R interpreted the column classes. This is also where error messages will appear if there are problems.  
@@ -84,80 +88,82 @@ Once data have been uploaded, you may want to get an idea of its structure, cont
 
 We can summarize our data frame with the`summary()` function.  
 ```{r}
-#summary(fish)
+summary(fish)
 ```
 
 `glimpse()` is another useful summary function.
 ```{r}
-#glimpse(fish)
+glimpse(fish)
 ```
 
 `nrow()` gives the numbers of rows.
 ```{r}
-#nrow(fish) #the number of rows or observations
+nrow(fish) #the number of rows or observations
 ```
 
 `ncol` gives the number of columns.
 ```{r}
-#ncol(fish) #the number of columns or variables
+ncol(fish) #the number of columns or variables
 ```
 
 `dim()` gives the dimensions.
 ```{r}
-#dim(fish) #total dimensions
+dim(fish) #total dimensions
 ```
 
 `names` gives the column names.
 ```{r}
-#names(fish) #column names
+names(fish) #column names
 ```
 
 `head()` prints the first n rows of the data frame.
 ```{r}
-#head(fish, n = 10)
+head(fish, n = 10)
 ```
 
 `tail()` prinst the last n rows of the data frame.
 ```{r}
-#tail(fish, n = 10)
+tail(fish, n = 10)
 ```
 
 `table()` is useful when you have a limited number of categorical variables. It produces fast counts of the number of observations in a variable. We will come back to this later... 
 ```{r}
-#table(fish$lakeid)
+table(fish$lakeid)
 ```
 
 We can also click on the `fish` data frame in the Environment tab or type View(fish).
 ```{r}
-#View(fish)
+View(fish)
 ```
 
 ## Filter
 Filter is a way of pulling out observations that meet specific criteria in a variable. We will work a lot more with this in the next lab.  
 ```{r}
-#little_fish <- filter(fish, length<=100)
-#little_fish
+little_fish <- filter(fish, length<=100)
+little_fish
 ```
 
 ## Practice
 1. Load the data `mammal_lifehistories_v2.csv` and place it into a new object called `mammals`.
 ```{r}
-
+setwd("~/Desktop/BIS15W2023_bramirez-main/lab3/data")
+mammals <- readr::read_csv("mammal_lifehistories_v2.csv")
 ```
 
 2. Provide the dimensions of the data frame.
 ```{r}
-
+dim(mammals)
 ```
 
 3. Check the column names in the data frame. 
 ```{r}
-
+names(mammals)
 ```
 
 4. Use `str()` to show the structure of the data frame and its individual columns; compare this to `glimpse()`. 
 ```{r}
-
+str(mammals)
+glimpse(mammals)
 ```
 
 ```{r}
@@ -166,7 +172,9 @@ Filter is a way of pulling out observations that meet specific criteria in a var
 
 5. . Try the `table()` command to produce counts of mammal order, family, and genus.  
 ```{r}
-
+table(mammals$order)
+table(mammals$family)
+table(mammals$Genus)
 ```
 
 ## Wrap-up

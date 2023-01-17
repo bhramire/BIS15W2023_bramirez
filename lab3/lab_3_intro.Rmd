@@ -27,7 +27,31 @@ library("jpeg")
 ## Warm-up
 1. Build a vector that includes the following height measurements for five plants:
 plant 1 30.7, plant 2 37.6, plant 3 28.4, plant 4 NA, plant 5 33.2
+```{r}
+PlantHeight <- c(30.7,37.6,28.4, NA, 33.2)
+```
+
 2. Build another vector that includes the following mass measurements:
 plant 1 4, plant 2 5.2, plant 3 3.7, plant 4 NA, plant 5 4.6
+```{r}
+PlantWeight <- c(4,5.2,3.7,NA, 4.6)
+```
+
 3. Assemble these vectors into a labeled data matrix with two columns
+```{r}
+PlantExperiment <- c(PlantHeight, PlantWeight)
+PlantExperiment
+```
+```{r}
+plant_data_matrix <- matrix(PlantExperiment, nrow = 5, byrow = F)
+plant_data_matrix
+```
+```{r}
+PlantLabels <- c("Plant 1", "Plant 2", "Plant 3", "Plant 4", "Plant 5")
+PlantDataType <- c("Height", "Weight")
+colnames(plant_data_matrix) <- PlantDataType
+rownames(plant_data_matrix) <- PlantLabels
+plant_data_matrix
+```
+
 4. Calculate the mean for height and mass and add them to the data matrix
