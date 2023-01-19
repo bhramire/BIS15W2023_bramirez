@@ -1,0 +1,39 @@
+---
+title: "Lab 4 Practice"
+output: html_document
+date: "2023-01-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library("tidyverse")
+
+library("palmerpenguins")
+```
+##Dimensions of 'penguins'
+```{r}
+dim(penguins)
+```
+#Variables of 'penguins'
+```{r}
+names(penguins)
+
+```
+## Individuals
+```{r}
+table(penguins$island)
+```
+## Summary of 'penguins'
+```{r}
+summary(penguins)
+```
+## Mean Body of 'penguins'
+```{r}
+mean(penguins$body_mass_g, na.rm = T)
+```
+
