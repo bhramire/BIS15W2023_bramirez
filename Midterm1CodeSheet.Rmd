@@ -1,0 +1,40 @@
+---
+title: "Midterm1CodeSheet"
+author: "Ben Ramirez"
+date: "2023-01-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+#Retrieving and Setting Working Directory
+```{r}
+getwd()
+setwd()
+#Or go into the sessions tab and find the set working directory function
+
+```
+#Creating a vector
+```{r}
+
+x <- c(4, 6, 8, 5, 6, 7, 7, 7)
+```
+#Talking about Classes
+```{r}
+is.integer(my_numeric) #is my_numeric an integer?
+my_integer <- as.integer(my_numeric) #create a new object specified as an integer
+
+```
+#Where are the NAs
+```{r}
+anyNA(object)
+
+```
+
