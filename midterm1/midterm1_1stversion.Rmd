@@ -48,7 +48,8 @@ Problem 3. (2 points) How many distinct orders of birds are represented in the d
 ```{r}
 ecosphere$order <- as.factor(ecosphere$order)
 table(ecosphere$order)
-
+ecosphere %>% 
+  summarize(n_orders = n_distinct(order))
 #19 distinct orders of birds
 ```
 
@@ -57,6 +58,7 @@ Problem 4. (2 points) Which habitat has the highest diversity (number of species
 ecosphere %>% 
   group_by(habitat) %>% 
   summarise(n_species = n_distinct(scientific_name))
+##Woodland has the highest diversity
 ```
 
 Run the code below to learn about the `slice` function. Look specifically at the examples (at the bottom) for `slice_max()` and `slice_min()`. If you are still unsure, try looking up examples online (https://rpubs.com/techanswers88/dplyr-slice). Use this new function to answer question 5 below.
@@ -91,7 +93,7 @@ Problem 7. (2 points) We might assume that all ducks live in wetland habitat. Is
 ```{r}
 ducks %>% 
   filter(habitat != "Wetland")
-##One exception is the Common Eider or Somateria mollissima
+##One exception is the Common Eider or Somateria mollissima who lives in the ocean!
 ```
 
 Problem 8. (4 points) In ducks, how is mean body mass associated with migratory strategy? Do the ducks that migrate long distances have high or low average body mass?
@@ -117,28 +119,33 @@ Problem 10. (4 points) In the eagles data, any species with a population size le
 new_eagles <- eagles %>% 
    
   mutate(conservation_status = ifelse(population_size <= 250000, "Threatened", "Non-Threatened"))
+new_eagles
 ```
 
 Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know?
 ```{r}
-anyNA(eagles)
+
+new_eagles$conservation_status <- as.factor(new_eagles$conservation_status)
+#new_eagles %>% 
+  #filter(!grepl("Threatened", conservation_status))
 new_eagles %>% 
-  filter(population_size)
+  filter(is.na(conservation_status))
+##All these birds are missing population size data.
 ```
 
 Problem 12. (4 points) Use the `ecosphere` data to perform one exploratory analysis of your choice. The analysis must have a minimum of three lines and two functions. You must also clearly state the question you are attempting to answer.
 ```{r}
 #Does migratory patterns affect egg count?
 ducks %>% 
-  group_by(migratory_strategy) %>% 
+  group_by(diet) %>% 
   summarise(avg_n_eggs = mean(mean_eggs_per_clutch),
             total = n())
-
+##Carnivorous and Omnivorous ducks lay more eggs!
 ```
 
 Please provide the names of the students you have worked with with during the exam:
 ```{r}
-
+#Deon Vasquez
 ```
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.
