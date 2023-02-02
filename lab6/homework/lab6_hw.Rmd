@@ -66,52 +66,90 @@ fisheries_tidy <- fisheries %>%
   mutate(catch= str_replace(catch, c('0 0'), replacement = ''))
 
 fisheries_tidy$catch <- as.numeric(fisheries_tidy$catch)
+fisheries_tidy
 ```
 
 3. How many countries are represented in the data? Provide a count and list their names.
 ```{r}
-fisheries %>% 
-  tabyl(country)
+country_list <- fisheries %>% 
+  tabyl(country) 
+  country_list
+  dim(country_list)
+  ##204 countries.
 ```
 
 4. Refocus the data only to include country, isscaap_taxonomic_group, asfis_species_name, asfis_species_number, year, catch.
 ```{r}
 names(fisheries)
-fisheries %>% 
+fisheries_tidy_focused <- fisheries_tidy %>% 
   select(-common_name,-isscaap_taxonomic_group,-fao_major_fishing_area,-measure)
 ```
 
 5. Based on the asfis_species_number, how many distinct fish species were caught as part of these data?
 ```{r}
-fisheries %>% 
+fisheries_tidy_focused %>% 
   summarise(n_distinct(asfis_species_name))
+#1548 species.
 ```
 
 6. Which country had the largest overall catch in the year 2000?
 ```{r}
-
+fisheries_tidy %>% 
+  filter(year == 2000) %>% 
+  group_by(country) %>% 
+  select("country", "catch", "year") %>% 
+  arrange(-catch)
+#China had the largest catch in 2000.
 ```
 
 7. Which country caught the most sardines (_Sardina pilchardus_) between the years 1990-2000?
 ```{r}
-
+fisheries_tidy %>% 
+  filter(between(year,1990,2000)) %>% 
+  filter(asfis_species_name == "Sardina pilchardus") %>% 
+  group_by(country) %>% 
+  select("country", "asfis_species_name", "year", "catch") %>% 
+  summarize(total_catch=sum(catch, na.rm=T)) %>% 
+  arrange(desc(total_catch))
+#Morocco had the highest catch of sardines!
 ```
 
 8. Which five countries caught the most cephalopods between 2008-2012?
 ```{r}
-
+fisheries_tidy %>% 
+  filter(between(year,2008,2012)) %>% 
+  filter(isscaap_taxonomic_group == "Squids, cuttlefishes, octopuses") %>%   group_by(country) %>% 
+  select("country", "isscaap_taxonomic_group", "year", "catch") %>% 
+  summarize(total_catch=sum(catch, na.rm=T)) %>% 
+  arrange(desc(total_catch)) %>% 
+  head(n=5)
+##China,Rep of Korea, Peru, Japan, and Chile had the most cephalopods between 2008-2012.
 ```
 
-```{r}
-
-```
 
 9. Which species had the highest catch total between 2008-2012? (hint: Osteichthyes is not a species)
 ```{r}
-
+fisheries_tidy %>% 
+  filter(between(year,2008,2012)) %>% 
+  group_by(asfis_species_name) %>% 
+  select( "asfis_species_name", "year", "catch") %>% 
+  summarize(total_catch=sum(catch, na.rm=T)) %>% 
+  arrange(desc(total_catch))
+#Theragra chalcogramma had the highest catch total from 2008 to 2012.
 ```
 
 10. Use the data to do at least one analysis of your choice.
+
+```{r}
+#Which species of fish were caught the least from 1990-2012? What's the 'rarest' fish in the net?
+fisheries_tidy %>% 
+  filter(between(year,1990,2012)) %>% 
+  group_by(asfis_species_name) %>% 
+  select( "asfis_species_name", "year", "catch") %>% 
+  summarize(total_catch=sum(catch, na.rm=T)) %>% 
+  arrange(total_catch) %>% 
+  filter(total_catch != 0)
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
