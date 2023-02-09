@@ -47,7 +47,7 @@ library(here)
 
 The quotes show the folder structure from the root directory.
 ```{r}
-sydneybeaches <-read_csv(here( "data", "sydneybeaches.csv")) %>% janitor::clean_names()
+sydneybeaches <-read_csv(here("lab8", "data", "sydneybeaches.csv")) %>% janitor::clean_names()
 sydneybeaches
 ```
 
@@ -77,7 +77,7 @@ sydneybeaches_wide
 5. Pivot the data back so that the dates are data and not column names.
 ```{r}
 sydneybeaches_wide %>% 
-  pivot_longer(
+  pivot_longer(-site,
     names_to= "date",
     values_to = "enterococci_cfu_100ml"
   )
@@ -85,18 +85,51 @@ sydneybeaches_wide %>%
 
 
 6. We haven't dealt much with dates yet, but separate the date into columns day, month, and year. Do this on the `sydneybeaches_long` data.
+```{r}
+sydneybeaches_long_dated<-sydneybeaches_long %>% 
+  separate(date, into= c("day", "month", "year"), sep = "/")
+sydneybeaches_long_dated
+```
 
 
 7. What is the average `enterococci_cfu_100ml` by year for each beach. Think about which data you will use- long or wide.
+```{r}
+ sydneybeaches_avg <- sydneybeaches_long_dated %>% 
+group_by(site,year) %>% 
+  summarise(mean_entero = mean(enterococci_cfu_100ml, na.rm = T),
+            n_total = n()) 
+sydneybeaches_avg
+
+```
 
 
 8. Make the output from question 7 easier to read by pivoting it to wide format.
+```{r}
+
+
+sydneybeaches_avg_clean <- sydneybeaches_long_dated %>% 
+   pivot_wider(
+     names_from = year,
+     values_from = enterococci_cfu_100ml
+   ) %>% 
+ group_by(site) %>% 
+   summarise(across(contains("20"),mean, na.rm = T))
+sydneybeaches_avg_clean
+```
 
 
 9. What was the most polluted beach in 2018?
+```{r}
+sydneybeaches_avg %>% 
+  filter(year == "2018") %>% 
+  slice_max(mean_entero, n=1) %>% 
+  arrange(desc(mean_entero))
+#Little Bay Beach had the highest average enterococci count in 2018.
+```
 
 
 10. Please complete the class project survey at: [BIS 15L Group Project](https://forms.gle/H2j69Z3ZtbLH3efW6)
+I wasn't sure if you wanted us to fill it out if we had a partner in mind because Prof Ledford said it'd be helpful for the record, but I still wasn't sure but I'm interested in virology and pathology. I'll fill it out, but I have a partner in mind. 
 
 
 ## Push your final code to GitHub!
