@@ -3,9 +3,9 @@ title: "Lab 10 Homework"
 author: "Please Add Your Name Here"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
-    toc: no
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -32,24 +32,107 @@ deserts <- read_csv(here("lab10", "data", "surveys_complete.csv"))
 ```
 
 1. Use the function(s) of your choice to get an idea of its structure, including how NA's are treated. Are the data tidy?  
+```{r}
+glimpse(deserts)
+##Data looks tidy.
+```
 
 2. How many genera and species are represented in the data? What are the total number of observations? Which species is most/ least frequently sampled in the study?
+```{r}
+deserts %>% 
+  summarise(
+    n_total=n(),
+    n_genera=n_distinct(genus),
+    n_species=n_distinct(species))
+
+deserts %>% 
+  tabyl(species)
+##merriami shows up most often while 5 species only appear once:scutalatus, tereticaudus, tigris, uniparens, viridis.
+
+ 
+```
+
 
 3. What is the proportion of taxa included in this study? Show a table and plot that reflects this count.
+```{r}
+deserts %>% 
+  tabyl(taxa)
+```
+
+```{r}
+deserts %>% 
+  ggplot(aes(x=taxa))+geom_bar()+scale_y_log10()+labs(title = "Observations by Taxon in Deserts Data",
+       x = "Taxonomic Group",
+       y= "# of Individuals, log10 scaled"
+       )+theme(plot.title = element_text(size = rel(1.25), hjust = 0.5))
+```
 
 4. For the taxa included in the study, use the fill option to show the proportion of individuals sampled by `plot_type.`
+```{r}
+deserts %>% 
+   ggplot(aes(x=taxa,fill=plot_type))+geom_bar(position = "dodge")+scale_y_log10()+labs(title = "Observations by Taxon in Deserts Data",
+       x = "Taxonomic Group",
+       y = "# of Individuals, log10 scaled",
+       fill = "Plot Type")
+
+
+```
 
 5. What is the range of weight for each species included in the study? Remove any observations of weight that are NA so they do not show up in the plot.
+```{r}
+deserts %>% 
+  filter(weight!="NA") %>% 
+  ggplot(aes(x=species_id, y=weight, na.rm = T))+geom_boxplot()+scale_y_log10()+labs(title = "Weight Plot for Desert Animals", x = "Species ID", y = "Plot of Animal Weight Distribution")
+```
+
 
 6. Add another layer to your answer from #4 using `geom_point` to get an idea of how many measurements were taken for each species.
+```{r}
+deserts %>% 
+  filter(weight!="NA") %>% 
+  ggplot(aes(x=species_id, y=weight, na.rm = T))+geom_boxplot()+scale_y_log10()+labs(title = "Weight Plot for Desert Animals", x = "Species ID", y = "Plot of Animal Weight Distribution")+geom_point(alpha=0.3, color="tomato", position = "jitter") +
+  coord_flip()
+```
 
 7. [Dipodomys merriami](https://en.wikipedia.org/wiki/Merriam's_kangaroo_rat) is the most frequently sampled animal in the study. How have the number of observations of this species changed over the years included in the study?
+```{r}
+deserts %>% 
+  filter(species == "merriami") %>% 
+  group_by(year) %>% 
+  summarise(n_merriami = n()) %>% 
+  ggplot(aes(x=as.factor(year), y=n_merriami))+geom_col()+labs(title = "Number of merriami Sampled Annual Distribution",y= "Number of merriami Sampled", x= "Year" ) + theme(axis.text.x = element_text(angle = 60, hjust = 1))
+```
 
 8. What is the relationship between `weight` and `hindfoot` length? Consider whether or not over plotting is an issue.
+```{r}
+deserts %>% 
+  ggplot(aes(x=weight, y=hindfoot_length))+geom_point(size=0.9)+geom_smooth(method=lm, se=F)
+```
 
 9. Which two species have, on average, the highest weight? Once you have identified them, make a new column that is a ratio of `weight` to `hindfoot_length`. Make a plot that shows the range of this new ratio and fill by sex.
+```{r}
+deserts %>% 
+  group_by(species) %>% 
+
+  summarise(max_weight = max(weight,na.rm=T))
+```
+
+```{r}
+deserts %>% 
+  filter(species == "albigula"  | species == "spectabilis") %>% 
+  filter(weight!="NA" & hindfoot_length!="NA" & sex!="NA") %>% 
+  mutate(foot_weight_ratio = weight/hindfoot_length) %>% 
+  ggplot(aes(x=species, y=foot_weight_ratio, fill=sex))+geom_boxplot()+labs(title = "Ranges of Weight-Foot Pad Ratio", x="Species", y= "Weight-Foot Pad Ratio", fill = "Sex") + theme(plot.title = element_text(size = rel(1.25), hjust = 0.5))
+```
+
 
 10. Make one plot of your choice! Make sure to include at least two of the aesthetics options you have learned.
+```{r}
+deserts %>% 
+##Can't figure out how to get rid of my NAs rn, will come back to this
+  mutate(mean_weight = mean(weight, na.rm=T)) %>% 
+  ggplot(aes(x = species_id ,  y=mean_weight, fill=sex))+geom_col(position= "dodge")+scale_y_log10()+theme(axis.text.x = element_text(angle = 80, hjust = 0.75))
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
