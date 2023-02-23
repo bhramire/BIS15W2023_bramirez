@@ -22,6 +22,8 @@ Please load the following libraries.
 library("tidyverse")
 library("janitor")
 library("naniar")
+#install.packages("ggthemes")
+library(ggthemes)
 ```
 
 ## Data
@@ -49,7 +51,7 @@ tabyl(race)
 
 ```{r}
 surgery %>% 
-  ggplot(aes(x=race,fill=race))+geom_bar()+labs(title ="Distribution of Race among Patients",x="Race", y="Number of Participants")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=race,fill=race))+geom_bar()+labs(title ="Distribution of Race among Patients",x="Race", y="Number of Participants")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
 ```
 
 3. (2 points) What is the mean age of participants by gender? (hint: please provide a number for each) Since only three participants do not have gender indicated, remove these participants from the data.
@@ -65,21 +67,21 @@ surgery %>%
 surgery %>% 
   group_by(gender) %>% 
   filter(gender == "M"|gender =="F") %>% 
-  ggplot(aes(x=age, fill = "red"))+geom_density()+facet_wrap(~gender)+labs(title="Ranges of Age divided by Gender",y= "Number of Individuals",x="Age of Individuals")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=age, fill=gender))+geom_boxplot()+facet_wrap(~gender)+labs(title="Ranges of Age divided by Gender",y= "Number of Individuals",x="Age of Individuals")+theme(plot.title = element_text(hjust =0.5))+coord_flip()+theme_igray()
 ```
 
 5. (2 points) How healthy are the participants? The variable `asa_status` is an evaluation of patient physical status prior to surgery. Lower numbers indicate fewer comorbidities (presence of two or more diseases or medical conditions in a patient). Make a plot that compares the number of `asa_status` I-II, III, and IV-V.  
 ```{r}
 surgery %>% 
   filter(asa_status == "I-II"|asa_status == "III"|asa_status == "IV-VI") %>%
-  ggplot(aes(x=asa_status, fill=asa_status))+geom_bar()+labs(title="Comparison of Patients' ASA Status",x="ASA Status",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))##+labs(title="",x="",y="")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=asa_status, fill=asa_status))+geom_bar()+labs(title="Comparison of Patients' ASA Status",x="ASA Status",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))+theme_igray()##+labs(title="",x="",y="")+theme(plot.title = element_text(hjust =0.5))
 ```
 
 6. (3 points) Create a plot that displays the distribution of body mass index for each `asa_status` as a probability distribution- not a histogram. (hint: use faceting!)
 ```{r}
 surgery %>% 
   filter(asa_status == "I-II"|asa_status == "III"|asa_status == "IV-VI") %>% 
-  ggplot(aes(x=bmi))+geom_bar()+facet_wrap(~asa_status, ncol = 3)+labs(title="Distribution of BMI by ASA Status",x="BMI",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=bmi, fill=asa_status))+geom_density()+facet_wrap(~asa_status, ncol = 3)+labs(title="Distribution of BMI by ASA Status",x="BMI",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
 ```
 
 The variable `ccsmort30rate` is a measure of the overall 30-day mortality rate associated with each type of operation. The variable `ccscomplicationrate` is a measure of the 30-day in-hospital complication rate. The variable `ahrq_ccs` lists each type of operation.  
@@ -96,7 +98,7 @@ surgery %>%
 surgery %>% 
   group_by(ahrq_ccs) %>% 
   summarize(mean_comp_rate = mean(ccscomplicationrate, na.rm=T)) %>% 
-  arrange(desc(mean_comp_rate))%>% 
+  arrange(desc(mean_comp_rate)) %>% 
   slice_max(mean_comp_rate, n=5)
 ##The mortality rate and complication rate are very different statistically; however, both are highest in the mostly the same procedures.
 ```
@@ -104,24 +106,44 @@ surgery %>%
 8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
 ```{r}
 surgery %>% 
-  ggplot(aes(x=ahrq_ccs,y=ccsmort30rate))+geom_col()+labs(title="Distribution of Mortality Rate by Procedure",x="Type of Procedure",y="Mortality Rate")+theme(plot.title = element_text(hjust =0.5), axis.text.x=element_text(angle=60))
+  ggplot(aes(x=ahrq_ccs,y=ccsmort30rate))+geom_col()+labs(title="Distribution of Mortality Rate by Procedure",x="Type of Procedure",y="Mortality Rate")+theme(plot.title = element_text(hjust =0.5), axis.text.x=element_text(angle=60, size =5))
 ```
 
 9. (4 points) When is the best month to have surgery? Make a chart that shows the 30-day mortality and complications for the patients by month. `mort30` is the variable that shows whether or not a patient survived 30 days post-operation.
 ```{r}
 surgery %>% 
   group_by(month) %>% 
-  filter(mort30 =="Yes") %>% 
- count(mort30) %>% 
+  filter(mort30 =="Yes") %>% #|complication =="Yes"
+ count(mort30) %>% #, complication
   arrange(n)
-##Have a surgery in December. That's when fewest folk died after surgery.
 ```
+
+```{r}
+surgery %>% 
+  group_by(month) %>% 
+  filter(complication =="Yes") %>% #|complication =="Yes"
+ count(complication) %>% #, complication
+  arrange(n)##Have a surgery in December. That's when fewest folk died after surgery.
+```
+
+
+
+
+
+
+
+
 
 10. (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
 ```{r}
 surgery %>% 
   filter(mort30 =="Yes") %>% 
-  ggplot(aes(x=month, y=mort30, fill=month))+geom_col()+ scale_x_discrete(limits = month.abb)+labs(title="Distribution of Post-Surgery Mortality by Month",x="Month",y="Number of Mortalities")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=month, y=mort30, fill=month))+geom_col()+ scale_x_discrete(limits = month.abb)+labs(title="Distribution of Post-Surgery Mortality by Month",x="Month",y="Number of Mortalities")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
+```
+```{r}
+surgery %>% 
+  filter(complication =="Yes") %>% 
+  ggplot(aes(x=month, y=complication, fill=month))+geom_col()+ scale_x_discrete(limits = month.abb)+labs(title="Distribution of Post-Surgery Complication by Month",x="Month",y="Number of Complications")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
 ```
 
 Please provide the names of the students you have worked with with during the exam:

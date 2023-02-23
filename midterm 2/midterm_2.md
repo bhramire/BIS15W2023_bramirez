@@ -21,6 +21,8 @@ Please load the following libraries.
 library("tidyverse")
 library("janitor")
 library("naniar")
+#install.packages("ggthemes")
+library(ggthemes)
 ```
 
 ## Data
@@ -117,7 +119,7 @@ tabyl(race)
 
 ```r
 surgery %>% 
-  ggplot(aes(x=race,fill=race))+geom_bar()+labs(title ="Distribution of Race among Patients",x="Race", y="Number of Participants")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=race,fill=race))+geom_bar()+labs(title ="Distribution of Race among Patients",x="Race", y="Number of Participants")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
 ```
 
 ![](midterm_2_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
@@ -145,11 +147,11 @@ surgery %>%
 surgery %>% 
   group_by(gender) %>% 
   filter(gender == "M"|gender =="F") %>% 
-  ggplot(aes(x=age, fill = "red"))+geom_density()+facet_wrap(~gender)+labs(title="Ranges of Age divided by Gender",y= "Number of Individuals",x="Age of Individuals")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=age, fill=gender))+geom_boxplot()+facet_wrap(~gender)+labs(title="Ranges of Age divided by Gender",y= "Number of Individuals",x="Age of Individuals")+theme(plot.title = element_text(hjust =0.5))+coord_flip()+theme_igray()
 ```
 
 ```
-## Warning: Removed 2 rows containing non-finite values (`stat_density()`).
+## Warning: Removed 2 rows containing non-finite values (`stat_boxplot()`).
 ```
 
 ![](midterm_2_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
@@ -159,7 +161,7 @@ surgery %>%
 ```r
 surgery %>% 
   filter(asa_status == "I-II"|asa_status == "III"|asa_status == "IV-VI") %>%
-  ggplot(aes(x=asa_status, fill=asa_status))+geom_bar()+labs(title="Comparison of Patients' ASA Status",x="ASA Status",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))##+labs(title="",x="",y="")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=asa_status, fill=asa_status))+geom_bar()+labs(title="Comparison of Patients' ASA Status",x="ASA Status",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))+theme_igray()##+labs(title="",x="",y="")+theme(plot.title = element_text(hjust =0.5))
 ```
 
 ![](midterm_2_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
@@ -169,11 +171,11 @@ surgery %>%
 ```r
 surgery %>% 
   filter(asa_status == "I-II"|asa_status == "III"|asa_status == "IV-VI") %>% 
-  ggplot(aes(x=bmi))+geom_bar()+facet_wrap(~asa_status, ncol = 3)+labs(title="Distribution of BMI by ASA Status",x="BMI",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=bmi, fill=asa_status))+geom_density()+facet_wrap(~asa_status, ncol = 3)+labs(title="Distribution of BMI by ASA Status",x="BMI",y="Number of Patients")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
 ```
 
 ```
-## Warning: Removed 3289 rows containing non-finite values (`stat_count()`).
+## Warning: Removed 3289 rows containing non-finite values (`stat_density()`).
 ```
 
 ![](midterm_2_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
@@ -205,7 +207,7 @@ surgery %>%
 surgery %>% 
   group_by(ahrq_ccs) %>% 
   summarize(mean_comp_rate = mean(ccscomplicationrate, na.rm=T)) %>% 
-  arrange(desc(mean_comp_rate))%>% 
+  arrange(desc(mean_comp_rate)) %>% 
   slice_max(mean_comp_rate, n=5)
 ```
 
@@ -228,7 +230,7 @@ surgery %>%
 
 ```r
 surgery %>% 
-  ggplot(aes(x=ahrq_ccs,y=ccsmort30rate))+geom_col()+labs(title="Distribution of Mortality Rate by Procedure",x="Type of Procedure",y="Mortality Rate")+theme(plot.title = element_text(hjust =0.5), axis.text.x=element_text(angle=60))
+  ggplot(aes(x=ahrq_ccs,y=ccsmort30rate))+geom_col()+labs(title="Distribution of Mortality Rate by Procedure",x="Type of Procedure",y="Mortality Rate")+theme(plot.title = element_text(hjust =0.5), axis.text.x=element_text(angle=60, size =5))
 ```
 
 ![](midterm_2_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
@@ -238,8 +240,8 @@ surgery %>%
 ```r
 surgery %>% 
   group_by(month) %>% 
-  filter(mort30 =="Yes") %>% 
- count(mort30) %>% 
+  filter(mort30 =="Yes") %>% #|complication =="Yes"
+ count(mort30) %>% #, complication
   arrange(n)
 ```
 
@@ -262,19 +264,59 @@ surgery %>%
 ## 12 Jan   Yes       19
 ```
 
+
 ```r
-##Have a surgery in December. That's when fewest folk died after surgery.
+surgery %>% 
+  group_by(month) %>% 
+  filter(complication =="Yes") %>% #|complication =="Yes"
+ count(complication) %>% #, complication
+  arrange(n)##Have a surgery in December. That's when fewest folk died after surgery.
 ```
+
+```
+## # A tibble: 12 × 3
+## # Groups:   month [12]
+##    month complication     n
+##    <chr> <chr>        <int>
+##  1 Dec   Yes            237
+##  2 Jul   Yes            301
+##  3 Apr   Yes            321
+##  4 Mar   Yes            324
+##  5 Nov   Yes            325
+##  6 May   Yes            333
+##  7 Feb   Yes            343
+##  8 Oct   Yes            377
+##  9 Jan   Yes            407
+## 10 Jun   Yes            410
+## 11 Sep   Yes            424
+## 12 Aug   Yes            462
+```
+
+
+
+
+
+
+
+
 
 10. (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
 
 ```r
 surgery %>% 
   filter(mort30 =="Yes") %>% 
-  ggplot(aes(x=month, y=mort30, fill=month))+geom_col()+ scale_x_discrete(limits = month.abb)+labs(title="Distribution of Post-Surgery Mortality by Month",x="Month",y="Number of Mortalities")+theme(plot.title = element_text(hjust =0.5))
+  ggplot(aes(x=month, y=mort30, fill=month))+geom_col()+ scale_x_discrete(limits = month.abb)+labs(title="Distribution of Post-Surgery Mortality by Month",x="Month",y="Number of Mortalities")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
 ```
 
-![](midterm_2_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](midterm_2_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+
+```r
+surgery %>% 
+  filter(complication =="Yes") %>% 
+  ggplot(aes(x=month, y=complication, fill=month))+geom_col()+ scale_x_discrete(limits = month.abb)+labs(title="Distribution of Post-Surgery Complication by Month",x="Month",y="Number of Complications")+theme(plot.title = element_text(hjust =0.5))+theme_igray()
+```
+
+![](midterm_2_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 Please provide the names of the students you have worked with with during the exam:
 
