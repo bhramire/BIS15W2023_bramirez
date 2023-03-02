@@ -189,6 +189,7 @@ wolves <- read_csv("data/wolves_data/wolves_dataset.csv")
 
 ```{r}
 names(wolves)
+glimpse(wolves)
 ```
 
 2. For the app, here is a faceted version of what we are looking for. We want the reactive part to be `pop` and you should use `shinydashboard`.
@@ -199,5 +200,32 @@ wolves %>%
   geom_bar()+
   facet_wrap(~pop)
 ```
+
+```{r}
+
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Wolves"),
+  dashboardSidebar(disable = T),
+  dashboardBody(
+    selectInput("x", "Select x Variable", choices = c("AK.PEN", "BAN.JAS", "BC", "DENALI", "ELLES", "GTNP","INT.AK", "MEXICAN", "MI", "MT", "N.NWT", "ONT", "SE.AK", "SNF", "SS.NWT", "YNP", "YUCH"), selected="AK.PEN"),
+    plotOutput("plot", width = "500px", height= "400px")
+  )
+  
+)
+
+server <- function(input, output, session) {
+
+  output$plot <- renderPlot({
+    wolves %>% 
+      filter( pop == input$x) %>% 
+    ggplot( aes(x = sex, fill=sex))+ geom_bar()
+  })
+    session$onSessionEnded(stopApp)
+}
+
+shinyApp(ui, server)
+```
+
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
