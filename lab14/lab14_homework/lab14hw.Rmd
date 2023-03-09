@@ -21,31 +21,32 @@ Answer the following questions in RMarkdown. Please embed all of your code and p
 ## Questions
 
 1. Look up 'Data Scientist' at https://www.bls.gov/. What degree is required for this career? Is it a growing occupation?  
-
+Any degree is computer science, statistics or mathematics will suffice for a Data scientist. It is an incredibly fast growing occupation, predicted to grow 36% from 2021 to 2031.
 
 2. How would you describe your data science skills on a resume for a job application? Write a blurb that reflects the skills you have learned in this course. 
-
+Experienced with data scrubbing, analysis and presentation of biological data sets. 
 
 3. What are your current career interests, and how could your R skills support that career path? (hint: this might be good content for your LinkedIn profile ;)
-
+I think that I might like to work as an Epidemiologist and I think that statistical analysis is an incredibly vital skill for said career.
 
 4. What about this course has been the most difficult for you? What has been the most rewarding?
-
+The hardest part has been trying to troubleshoot problems that I've experienced when using my own at home laptop. Other than that, the lessons and labs provided have been very clear and easy to follow.
 
 5. What do you wish you had known, or what skills do you wish you had, before taking this class.
-
+I wish that I had known more statistical tests to run with data I suppose. Or rather, wish I had known more analysis I could try in the try your own questions(10).
 
 6. If we had 1 more lab in this class, what would you have liked to learn more about?
+I think learning more about apps would have been fantastic as they are an incredible way to present data to other folk.
 
 
 7. Now that you have (almost!) completed this course, do you plan to persue further data or computer science skills? What do you plan to do?
-
+I hope that I can pursue more computer science skills as coding is still an incredible skill to have and almost essential at this point but as of now, I am not aware of the options to me.
 
 8. How important was working with a partner to your success in this class? If this class were transitioned to an online format, how do you think that would affect your understanding?
-
+I think that working with a partner was a bit helpful for labs in person and helped keep me on task. I don't think that the lab would work well online really. I think that being in person is good to be able to ask questions or have someone see my computer screem to help.
 
 9. Did you complete the class evaluation? Please complete the class evaluation using the link provided in the announcements. Your feedback is very important and we appreciate your time.
-
+I shall.
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
